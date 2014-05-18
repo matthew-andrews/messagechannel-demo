@@ -1,0 +1,17 @@
+<!DOCTYPE HTML>
+<title>MessageChannel Demo</title>
+<pre id="log">Log:</pre>
+<script>
+  var worker = new SharedWorker('agent.js');
+  var log = document.getElementById('log');
+  worker.port.onmessage = function(e) { // note: not worker.onmessage!
+    window.portal = e.data.port;
+    window.portal.start();
+    window.portal.addEventListener('message', function(e) {
+      log.innerText += '\n'+ (typeof e.data) + ' : ' + e.data;
+    });
+  }
+</script>
+<button onclick="window.portal.postMessage('hi');">Send 'hi'</button>
+<button onclick="var now = new Date();window.portal.postMessage(now);">Send a date object</button>
+<button onclick="var node = document.createElement('div');window.portal.postMessage(node);">Send a dom node</button>
